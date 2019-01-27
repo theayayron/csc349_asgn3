@@ -12,15 +12,16 @@ public class Inversions {
         int inv = 0;
 
         if (arr.length > 2) {
-
             // DIVIDE STEP
             int mid = arr.length/2;
             int[] A = Arrays.copyOfRange(arr, 0, mid);
             int[] B = Arrays.copyOfRange(arr, mid, arr.length);
+
+            // CONQUER STEP
             inv += invCounter(A);
             inv += invCounter(B);
 
-            // CONQUER and COMBINE STEP
+            // COMBINE STEP
             // Note: We both count inversions and combine/sort the two arrays A and B during invMerge. The original
             //       input array is modified directly so that recursive calls upstream receive the sorted array.
             inv += invMerge(A, B, arr);
@@ -38,8 +39,10 @@ public class Inversions {
     }
 
     /**
-     * Merges the two given arrays into ascending order and counts the number of inversions.
-     * Returns the an array containing the number of inversions and the newly merged array.
+     * Input: three arrays of ints
+     * Output: int
+     * Merges the two given arrays into the allocated destination array in ascending order. Also counts the number of
+     * inversions to return.
      */
     private static int invMerge(int[] A, int[] B, int[] dest) {
         int inv = 0;
