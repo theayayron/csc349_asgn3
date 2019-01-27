@@ -20,20 +20,16 @@ public class Inversions {
             inv += invCounter(A);
             inv += invCounter(B);
 
-            // CONQUER STEP
-            int[][] result = invMerge(A, B);
-            inv += result[0][0];
-
-            // COMBINE STEP
-            // Note: The two arrays A and B are actually recombined during invMerge. However, we have to reassign the
-            //       given array so that the recursive calls upstream will have the sorted sub-arrays for merging.
-            arr = result[1];
+            // CONQUER and COMBINE STEP
+            // Note: We both count inversions and combine/sort the two arrays A and B during invMerge. The original
+            //       input array is modified directly so that recursive calls upstream receive the sorted array.
+            inv += invMerge(A, B, arr);
 
         } else  if (arr.length == 2){
             if(arr[0] > arr[1]) {
                 int temp = arr[0];
                 arr[0] = arr[1];
-                arr[temp] = 1;
+                arr[1] = temp;
                 inv++;
             }
         }
@@ -45,20 +41,19 @@ public class Inversions {
      * Merges the two given arrays into ascending order and counts the number of inversions.
      * Returns the an array containing the number of inversions and the newly merged array.
      */
-    private static int[][] invMerge(int[] A, int[] B) {
+    private static int invMerge(int[] A, int[] B, int[] dest) {
         int inv = 0;
-        int[] newArray = new int[A.length + B.length];
         int i = 0, j = 0, k = 0;
 
         // compare and fill until one array is completely empty
         while(i < A.length && j < B.length) {
 
             if(A[i] < B[j]) {
-                newArray[k] = A[i];
+                dest[k] = A[i];
                 i++;
 
             } else {
-                newArray[k] = B[j];
+                dest[k] = B[j];
                 j++;
                 inv += A.length - i;
             }
@@ -69,13 +64,12 @@ public class Inversions {
         // fill remaining spaces
         if(i==A.length) {
             for(; j < B.length; j++, k++)
-                newArray[k] = B[j];
+                dest[k] = B[j];
         } else {
             for(; i < A.length; i++, k++)
-                newArray[k] = A[i];
+                dest[k] = A[i];
         }
 
-        int[][] result = {{inv}, newArray};
-        return result;
+        return inv;
     }
 }
